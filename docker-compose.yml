@@ -10,7 +10,6 @@ services:
       FLASK_ENV: development
   redis:
     image: redis:latest
-    container_name: face_redis
     restart: always
     command:
       - 'redis-server'
@@ -25,6 +24,8 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./docker/redis/data:/data
+      - my-redd-volume:/data
     environment:
       - REDIS_REPLICATION_MODE=master
+volumes:
+    my-redd-volume:
