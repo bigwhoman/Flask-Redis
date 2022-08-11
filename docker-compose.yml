@@ -9,7 +9,22 @@ services:
     environment:
       FLASK_ENV: development
   redis:
-    image: "redis:alpine"
+    image: redis:latest
+    container_name: face_redis
+    restart: always
+    command:
+      - 'redis-server'
+      - '--loglevel ${REDIS_LOGLEVEL:-warning}'
+      - '--databases 2'
+      - '--save 900 1'
+      - '--save 300 10'
+      - '--save 60 10000'
+      - '--maxmemory ${REDIS_MAXMEM:-50mb}'
+      - '--maxmemory-policy ${REDIS_POLICY:-noeviction}'
+      - '--appendonly yes'
+    ports:
+      - "6379:6379"
     volumes:
-            - ./config/redis.conf:/redis.conf
-    command: [ "redis-server", "/redis.conf" ]
+      - ./docker/redis/data:/data
+    environment:
+      - REDIS_REPLICATION_MODE=master
